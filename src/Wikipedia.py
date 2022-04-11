@@ -66,7 +66,6 @@ def chrome_takeFullScreenshot(driver) :
 
 def headless_pic(URL):
 
-
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
