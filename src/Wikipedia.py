@@ -76,9 +76,9 @@ def chrome_headless_picture(URL):
         pass
     
     scrollHeight = driver.execute_script("return document.body.scrollHeight")
-    print(scrollHeight)
+    
     inc = (scrollHeight / 10.0)
-    scroll = 0
+    
     for i in range(0,10):
         scrollTo = inc * (i + 1)
         ScrollScript = "window.scrollTo(0," + str(scrollTo) + ")"
@@ -136,7 +136,7 @@ def firefox_picture(URL):
         scrollHeight = browser.execute_script("return document.body.scrollHeight")
 
         inc = (scrollHeight / 10.0)
-        scroll = 0
+        
 
         for i in range(0,10):
             scrollTo = inc * (i + 1)

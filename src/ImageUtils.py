@@ -36,7 +36,7 @@ def SplitAndCrop(image_path):
     filename = image_path
     img = Image.open(filename)
     width, height = img.size
-
+    
     w,h = (width,int(height/10))
     frame_num = 1
     for col_i in range(0, width, w):
@@ -46,7 +46,7 @@ def SplitAndCrop(image_path):
 
             output_file = save_to.format(frame_num)
             crop.save(output_file)
-            resize(output_file)
+            #resize(output_file)
 
             images.append(output_file)
             frame_num += 1

@@ -6,20 +6,19 @@ import sys
 
 def run(username,password):
     ImageUtils.clear_output_folder()
-    #Get URL
+
     article = Wikipedia.GetFeaturedArticleURL()
     if not article:
         return
-    #Take screenshot
-    #image_path = Wikipedia.TakePicture(article)
+
     image_path = Wikipedia.chrome_headless_picture(article)
     if not image_path:
         return
-    #Convert to JPG
+
     ImageUtils.PNGtoJPG(image_path, 'sc.jpg')
 
     images = (ImageUtils.SplitAndCrop('sc.jpg'))
-
+    print("images",images)
     run2(images,username,password,article)
 
 #Run()
@@ -45,8 +44,8 @@ def run2(images,username,password,article):
     ids = []
 
     for image_path in images:
-        image_path_2 = ImageUtils.PNGtoJPG(image_path,'a.jpg')
-        ids.append(InstagramUtils.upload_photo(image_path_2,igSession=s))
+        ImageUtils.PNGtoJPG(image_path,'a.jpg')
+        ids.append(InstagramUtils.upload_photo('a.jpg',igSession=s))
     
     if ids:
         InstagramUtils.upload_album(ids,caption=article,igSession=s)
