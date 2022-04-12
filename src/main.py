@@ -5,18 +5,20 @@ import InstagramUtils
 import sys
 
 def run(username,password):
-
+    ImageUtils.clear_output_folder()
     #Get URL
     article = Wikipedia.GetFeaturedArticleURL()
-
+    if not article:
+        return
     #Take screenshot
-    image_path = Wikipedia.headless_pic(article)
+    #image_path = Wikipedia.TakePicture(article)
+    image_path = Wikipedia.chrome_headless_picture(article)
     if not image_path:
         return
     #Convert to JPG
-    image_path = ImageUtils.PNGtoJPG(image_path, 'sc.jpg')
+    ImageUtils.PNGtoJPG(image_path, 'sc.jpg')
 
-    images = (ImageUtils.SplitAndCrop('sc.png'))
+    images = (ImageUtils.SplitAndCrop('sc.jpg'))
 
     run2(images,username,password,article)
 
@@ -57,3 +59,5 @@ if __name__ == '__main__':
     #article = Wikipedia.GetFeaturedArticleURL()
     #Wikipedia.headless_pic(article)
     run(sys.argv[1],sys.argv[2])
+    #ImageUtils.clear_output_folder()
+   

@@ -1,17 +1,21 @@
 from PIL import Image
 import cv2
 import os
+import glob
 import sys
+
+#https://stackoverflow.com/questions/185936/how-to-delete-the-contents-of-a-folder
+def clear_output_folder(folder='./output'):
+
+    files = glob.glob(folder+'/*')
+    for f in files:
+        os.remove(f)
 
 def PNGtoJPG(image_path,image_new_path):
 
-
     png_img = cv2.imread(image_path)
 
-
     cv2.imwrite(image_new_path, png_img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
-
-    return image_new_path
 
 def resize(image_path):
 
@@ -23,12 +27,8 @@ def resize(image_path):
     dim = (width,height)
     resized = cv2.resize(img,dim, interpolation=cv2.INTER_AREA)
 
-    #image_new_path = "sc2.jpg"
-
     cv2.imwrite(image_path,resized)
 
-    return image_path
-    #return image_new_path
 
 def SplitAndCrop(image_path):
     images = []
@@ -36,9 +36,8 @@ def SplitAndCrop(image_path):
     filename = image_path
     img = Image.open(filename)
     width, height = img.size
-    start_pos = start_x, start_y = (0, 0)
-    cropped_image_size = w, h = (width,int(height/10)) #800
 
+    w,h = (width,int(height/10))
     frame_num = 1
     for col_i in range(0, width, w):
         for row_i in range(0, height, h):

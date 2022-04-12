@@ -203,8 +203,8 @@ def post(upload_id,caption="",igSession=None):
     payload = f'upload_id={upload_id}&caption={caption}&usertags=&custom_accessibility_caption=&retry_timeout='
     headers = {
         'authority': 'www.instagram.com',
-        'x-ig-www-claim': session['X-IG-WWW-Claim'], #'hmac.AR2-43UfYbG2ZZLxh-BQ8N0rqGa-hESkcmxat2RqMAXejXE3',
-        'X-Instagram-AJAX': session['X-Instagram-AJAX'], #'adb961e446b7-hot',
+        'x-ig-www-claim': session['X-IG-WWW-Claim'], 
+        'X-Instagram-AJAX': session['X-Instagram-AJAX'], 
         'content-type': 'application/x-www-form-urlencoded',
         'accept': '*/*',
         'user-agent': USER_AGENT_2,
@@ -243,7 +243,7 @@ def upload_album(upload_ids,caption="",igSession=None):
     data = json.dumps({
         "caption": caption,
         "children_metadata": children_metadata,
-        "client_sidecar_id": str(upload_id), #these need to be strings (enclosed in quotes in JSON)
+        "client_sidecar_id": str(upload_id), 
         "disable_comments": "0",
         "like_and_view_counts_disabled": False,
         "source_type": "library"
@@ -253,11 +253,11 @@ def upload_album(upload_ids,caption="",igSession=None):
     print(data)
 
     headers = {
-        'X-CSRFTOKEN': session['csrf_token'], #TODO dont hardcode these
-        'X-Instagram-AJAX': session['X-Instagram-AJAX'], #'91a9763f5eb6',
+        'X-CSRFTOKEN': session['csrf_token'], 
+        'X-Instagram-AJAX': session['X-Instagram-AJAX'], 
         'X-IG-App-ID': session['X-IG-App-ID'],
         'X-ASBD-ID': session['X-ASBD-ID'],
-        'X-IG-WWW-Claim': session['X-IG-WWW-Claim'],#'hmac.AR0dp3EMo4HHKfusKv6qK3m5vbP45hDrio9DJaaFolArG2ME',
+        'X-IG-WWW-Claim': session['X-IG-WWW-Claim'],
         "Accept-Encoding": "gzip",
         "Offset": "0",
         "Content-Type": "application/json",
@@ -281,7 +281,7 @@ def upload_album(upload_ids,caption="",igSession=None):
             "Album Upload failed with the following response: {}".format(response)
         )
         return None
-    # update the upload id
+    
     upload_id = int(response.json()['client_sidecar_id'])
 
     return upload_id

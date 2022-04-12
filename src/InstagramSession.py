@@ -74,7 +74,6 @@ class InstagramSession:
         f.close()
         
         
-
     def load_from_file(self):
         try:
             f = open("config","r")
