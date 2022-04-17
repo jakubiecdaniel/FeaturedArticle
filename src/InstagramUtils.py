@@ -158,7 +158,6 @@ def upload_photo(photo,upload_id=None,igSession=None):
         'X-Instagram-AJAX': session['X-Instagram-AJAX'], 
         'X-IG-App-ID': session['X-IG-App-ID'],
         'X-ASBD-ID': session['X-ASBD-ID'],
-        "Accept-Encoding": "gzip",
         "X-Instagram-Rupload-Params": json.dumps(rupload_params),
         "X-Entity-Type": "image/jpeg",
         "Offset": "0",
@@ -172,7 +171,7 @@ def upload_photo(photo,upload_id=None,igSession=None):
         "sessionid": session['session_id'],
         "csrftoken": session['csrf_token'],
         'ds_user_id':session['ds_user_id'],
-        'ig_did=':  session['ig_did'],
+        'ig_did':  session['ig_did'],
         'ig_nrcb1': '1',
         'mid': session['mid'],
         'rur': session['rur']

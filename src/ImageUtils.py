@@ -20,7 +20,7 @@ def PNGtoJPG(image_path,image_new_path):
 def resize(image_path):
 
     img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
-
+    #height, width, _ = img.shape
     width = 800
     height = 800
 

@@ -35,19 +35,20 @@ def run2(images,username,password,article):
 
     s = InstagramSession()
 
-    if not s.load_from_file():
-        InstagramUtils.get_ig_app_id_and_asbd(s)
-        InstagramUtils.get_rollout_hash(s)
-        InstagramUtils.login(username,password,s)
-        s.write_to_file()
+    #if not s.load_from_file():
+    InstagramUtils.get_ig_app_id_and_asbd(s)
+    InstagramUtils.get_rollout_hash(s)
+    InstagramUtils.login(username,password,s)
+    s.write_to_file()
         
     ids = []
 
     for image_path in images:
         ImageUtils.PNGtoJPG(image_path,'a.jpg')
+        #ImageUtils.resize('a.jpg')
         ids.append(InstagramUtils.upload_photo('a.jpg',igSession=s))
     
-    if ids:
+    if ids: #400 occurs when images are too big
         InstagramUtils.upload_album(ids,caption=article,igSession=s)
 
 #
