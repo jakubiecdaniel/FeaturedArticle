@@ -1,5 +1,6 @@
 from requests import Request,Session
 import requests
+from requests import HTTPError
 import json
 import re
 from datetime import datetime
@@ -11,6 +12,8 @@ class Instagram:
         self.session = Session()
         self.session.headers.update({'User-Agent':self.USER_AGENT})
         self.config_file = config_file
+        self.username = ''
+        self.password = ''
         if config_file:
             self.load_session_from_config()
             
@@ -21,7 +24,10 @@ class Instagram:
         
         f = open("config_headers","r")
 
-        session = json.loads(f.read())
+        data = f.read()
+        if not data:
+            raise ValueError("Headers File is empty")
+        session = json.loads(data)
         
         self.session.headers.update(session)
 
@@ -29,7 +35,10 @@ class Instagram:
 
         f = open("config_cookies","r")
 
-        cookies = json.loads(f.read())
+        data = f.read()
+        if not data:
+            raise ValueError("Cookies File is empty")
+        cookies = json.loads(data)
         
         self.session.cookies.update(cookies)
 
@@ -51,7 +60,7 @@ class Instagram:
         url = 'https://www.instagram.com/static/bundles/metro/ConsumerLibCommons.js/abe44afead26.js'
 
         response = requests.get(url, headers = {'User-agent' : self.USER_AGENT})
-
+        
         js = response.text
         
         m = re.search('e.ASBD_ID ?= ?\'[0-9]+\'',js)
@@ -71,7 +80,7 @@ class Instagram:
         url = 'https://www.instagram.com/data/shared_data/'
 
         response = requests.get(url, headers = {'User-agent' : self.USER_AGENT})
-
+        
         json_data = json.loads(response.text)
 
         rollout_hash = (json_data['rollout_hash'])
@@ -79,8 +88,11 @@ class Instagram:
         self.session.headers.update({'X-Instagram-AJAX':rollout_hash})  
         
     
-    def login(self,username, password) -> bool:
-        
+    def login(self,username=None, password=None) -> bool:
+        if username is None:
+            username = self.username
+        if password is None:
+            password = self.password
 
         url = 'https://www.instagram.com/accounts/login/'
         login_url = 'https://www.instagram.com/accounts/login/ajax/'
@@ -108,9 +120,9 @@ class Instagram:
         login_header = {
             #"User-Agent": 'lalalalal',
             "X-Requested-With": "XMLHttpRequest",
-            "Referer": "https://www.instagram.com/accounts/login/"#,
-            #"x-csrftoken": csrf,
-            #"X-IG-WWW-Claim": '0',
+            "Referer": "https://www.instagram.com/accounts/login/",
+            "X-IG-WWW-Claim": '0'
+            #"x-csrftoken": csrf,           
             #"X-ASBD-ID": session['X-ASBD-ID'],
             #"X-Instagram-AJAX": session['X-Instagram-AJAX'],
             #"X-IG-App-ID": session['X-IG-App-ID']
@@ -125,9 +137,12 @@ class Instagram:
 
         if 'authenticated' in json_data:
             print("LOGIN SUCCESS")
+
+            csrf = login_response.cookies['csrftoken']
+            self.session.headers.update({'X-CSRFTOKEN':csrf})
             
-            #hmac =  login_response.headers['x-ig-set-www-claim']
-            #self.session.headers.update({'X-IG-WWW-Claim':hmac})
+            hmac = login_response.headers['x-ig-set-www-claim']
+            self.session.headers.update({'X-IG-WWW-Claim':hmac})
            
             return True
 
@@ -164,7 +179,7 @@ class Instagram:
 
         if response.status_code != 200:
             print("Photo Upload failed with the following response: {}".format(response))
-            return None
+            raise HTTPError("Status Code")
 
         upload_id = int(response.json()['upload_id'])
         return upload_id
@@ -202,7 +217,7 @@ class Instagram:
         }
 
         response = self.session.request("POST", "https://i.instagram.com/api/v1/media/configure_sidecar/", headers=headers, data=data)#, cookies=cookies)
-    
+        print(response.request.headers)
         if response.status_code != 200:
             print(
                 "Album Upload failed with the following response: {}".format(response)
@@ -215,17 +230,7 @@ class Instagram:
 
 
 
-if __name__ == '__main__':
 
-    insta = Instagram(False)
-    insta.get_ig_app_id_and_asbd()
-    print(insta.session.headers)
-    insta.get_rollout_hash()
-    print(insta.session.headers)
-    insta.login('','')
-    insta.write_session_to_file()
-    #print(insta.session.headers)
-    #id = insta.upload_photo('a.jpg')
-    #id2 = insta.upload_photo('b.jpg')
-    #if id:
-    #    insta.upload_album([id,id2])
+
+    
+    
