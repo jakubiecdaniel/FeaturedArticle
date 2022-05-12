@@ -10,6 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException 
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 def GetFeaturedArticleURL():
     baseURL = "https://en.wikipedia.org"
@@ -46,9 +47,9 @@ def chrome_headless_picture(URL):
     options.add_argument('--log-level=1')
 
     try:
-        driver = webdriver.Chrome(executable_path='C:\\chromedriver\\chromedriver.exe',chrome_options=options)
-    except WebDriverException:
-        print("Chromedriver needs to be installed.")
+        driver = webdriver.Chrome(ChromeDriverManager().install(),chrome_options=options)
+    except WebDriverException as err:
+        print(err)
         return False
     
     print(driver.get_window_size())
