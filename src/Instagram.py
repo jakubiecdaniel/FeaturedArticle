@@ -15,8 +15,10 @@ class Instagram:
         self.username = ''
         self.password = ''
         if config_file:
-            self.load_session_from_config()
-            
+            try:
+                self.load_session_from_config()
+            except FileNotFoundError:
+                print("Config files not found... running for first time...")
 
     def load_session_from_config(self):
         if not self.config_file:
