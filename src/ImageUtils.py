@@ -29,8 +29,12 @@ def resize(image_path):
 
     cv2.imwrite(image_path,resized)
 
-#Todo: atm output folder has to exist for it work
 def SplitAndCrop(image_path):
+    OUTPUT_DIR = './output'
+
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
     images = []
 
     filename = image_path
@@ -42,7 +46,7 @@ def SplitAndCrop(image_path):
     for col_i in range(0, width, w):
         for row_i in range(0, height, h):
             crop = img.crop((col_i, row_i, col_i + w, row_i + h))
-            save_to= os.path.join("./output", "post_{:02}.png")
+            save_to= os.path.join(OUTPUT_DIR, "post_{:02}.png")
 
             output_file = save_to.format(frame_num)
             crop.save(output_file)
