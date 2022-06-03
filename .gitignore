@@ -10,5 +10,4 @@ __pycache__
 config_cookies
 config_headers
 /env
-*.html
 config
