@@ -29,7 +29,7 @@ def resize(image_path):
 
     cv2.imwrite(image_path,resized)
 
-
+#Todo: atm output folder has to exist for it work
 def SplitAndCrop(image_path):
     images = []
 
