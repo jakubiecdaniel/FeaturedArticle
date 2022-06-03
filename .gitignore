@@ -1,0 +1,13 @@
+userpass
+*.jpg
+*.png
+/output
+/Scripts
+/Lib
+__pycache__
+*.log
+/archive
+
+
+*.html
+config
