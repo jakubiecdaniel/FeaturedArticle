@@ -1,4 +1,3 @@
-userpass
 *.jpg
 *.png
 /output
@@ -11,3 +10,4 @@ config_cookies
 config_headers
 /env
 config
+setup.cfg
