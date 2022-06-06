@@ -45,7 +45,10 @@ def chrome_headless_picture(URL):
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--log-level=1')
+<<<<<<< HEAD
     #https://stackoverflow.com/questions/53073411/selenium-webdriverexceptionchrome-failed-to-start-crashed-as-google-chrome-is
+=======
+>>>>>>> 57c14ca863a640a7d78464954a65cc1a77e915fb
     options.add_argument('--no-sandbox')
 
     try:
