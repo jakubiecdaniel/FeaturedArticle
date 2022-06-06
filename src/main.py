@@ -46,31 +46,37 @@ def do_wikipedia():
 
 #images = ['./output\\post_01.png', './output\\post_02.png', './output\\post_03.png', './output\\post_04.png', './output\\post_05.png', './output\\post_06.png', './output\\post_07.png', './output\\post_08.png', './output\\post_09.png', './output\\post_10.png', './output\\post_11.png']
 
-
-
 def run(username,password):
 
-    insta = Instagram.Instagram(True)
+    cached_login = True
+    insta = None
+    
+    try:
+        insta = Instagram.Instagram(True)
+    except ValueError:
+        insta = Instagram.Instagram(False)
+        cached_login = False
+
     insta.username = username
     insta.password = password
     images,article = do_wikipedia()
-    try:
-        do_upload(insta,images,article)
-    except HTTPError:
+
+    if cached_login is True:
+        try:
+            do_upload(insta,images,article)
+        except HTTPError:
+            login(insta)
+            do_upload(insta,images,article)
+    else:
         login(insta)
         do_upload(insta,images,article)
         
-    
-
-
-
-
-
 if __name__ == '__main__':
+    do_wikipedia()
     try:
         run(sys.argv[1],sys.argv[2])
     except IndexError:
         print("Username/Password environment variables not found")
-    
+     
     
    
