@@ -3,9 +3,7 @@ import ImageUtils
 import Wikipedia
 import Instagram
 import sys
-import os
 from requests import HTTPError
-
 
 def login(insta):
     insta.get_ig_app_id_and_asbd()
@@ -20,10 +18,10 @@ def do_upload(insta,images,article):
 
     for image_path in images:
         ImageUtils.PNGtoJPG(image_path,'a.jpg')
-        #ImageUtils.resize('a.jpg')
+
         ids.append(insta.upload_photo('a.jpg'))
     
-    if ids: #400 occurs when images are too big
+    if ids: 
         insta.upload_album(ids,caption=article)
 
 def do_wikipedia():
@@ -43,9 +41,6 @@ def do_wikipedia():
     
     return images,article
     
-
-#images = ['./output\\post_01.png', './output\\post_02.png', './output\\post_03.png', './output\\post_04.png', './output\\post_05.png', './output\\post_06.png', './output\\post_07.png', './output\\post_08.png', './output\\post_09.png', './output\\post_10.png', './output\\post_11.png']
-
 def run(username,password):
 
     cached_login = True

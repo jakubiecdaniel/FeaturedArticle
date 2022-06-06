@@ -7,8 +7,9 @@ from datetime import datetime
 class Instagram:
 
     USER_AGENT = "Mozilla/5.0 (Linux; Android 9; SM-G955U Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/84.0.4147.111 Mobile Safari/537.36 Instagram 153.0.0.34.96 Android (28/9; 420dpi; 1080x2094; samsung; SM-G955U; dream2qltesq; qcom; en_US; 236572377)"
-    #USER_AGENT = 'lalalala'
+    
     def __init__(self,config_file=False):
+        
         self.session = Session()
         self.session.headers.update({'User-Agent':self.USER_AGENT})
         self.config_file = config_file
@@ -20,7 +21,9 @@ class Instagram:
             except FileNotFoundError:
                 print("Config files not found... running for first time...")
 
+
     def load_session_from_config(self):
+
         if not self.config_file:
             raise ValueError("Config file not loaded")
         
@@ -47,6 +50,7 @@ class Instagram:
         f.close()
         return True
 
+
     def write_session_to_file(self):
         f = open("config_headers", "w")
         f.write(json.dumps(dict(self.session.headers)))
@@ -54,9 +58,8 @@ class Instagram:
         f = open("config_cookies", "w")
         f.write(json.dumps(dict(self.session.cookies)))
         f.close()
-    #Instagram Requests
+  
 
-        
     def get_ig_app_id_and_asbd(self):
 
         url = 'https://www.instagram.com/static/bundles/metro/ConsumerLibCommons.js/abe44afead26.js'
@@ -75,10 +78,11 @@ class Instagram:
 
         IG_APP_ID = m2.group(0)
 
-        self.session.headers.update({'X-ASBD-ID':ASBD_ID,'X-IG-App-ID':IG_APP_ID})        
+        self.session.headers.update({'X-ASBD-ID':ASBD_ID,'X-IG-App-ID':IG_APP_ID})   
+
 
     def get_rollout_hash(self): 
-        #should we use the session for this one?
+
         url = 'https://www.instagram.com/data/shared_data/'
 
         response = requests.get(url, headers = {'User-agent' : self.USER_AGENT})
@@ -91,6 +95,7 @@ class Instagram:
         
     
     def login(self,username=None, password=None) -> bool:
+
         if username is None:
             username = self.username
         if password is None:
@@ -148,12 +153,11 @@ class Instagram:
            
             return True
 
-
         return False
 
 
     def upload_photo(self,photo,upload_id=None):
-       
+
         upload_id = int(datetime.now().timestamp())
         upload_name = "fb_uploader_{upload_id}".format(upload_id=upload_id)
         rupload_params = {
@@ -229,10 +233,3 @@ class Instagram:
         upload_id = int(response.json()['client_sidecar_id'])
 
         return upload_id
-
-
-
-
-
-    
-    

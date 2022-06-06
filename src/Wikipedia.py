@@ -1,11 +1,8 @@
 import bs4
 import requests
-import re
-import os
 import time
 
 from selenium import webdriver
-import selenium
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException 
@@ -13,6 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 def GetFeaturedArticleURL():
+    
     baseURL = "https://en.wikipedia.org"
     FeaturedListURL = "https://en.wikipedia.org/wiki/Main_Page"
 
@@ -38,6 +36,7 @@ def GetFeaturedArticleURL():
     print(FeaturedArticleURL)
 
     return FeaturedArticleURL
+
 
 def chrome_headless_picture(URL):
 
@@ -99,6 +98,7 @@ def chrome_headless_picture(URL):
     driver.close()
     return 'sc.png'
 
+'''
 def firefox_picture(URL): 
     try:
         browser = webdriver.Firefox()
@@ -156,3 +156,4 @@ def firefox_picture(URL):
         browser.close()
 
     return 'sc.png'
+'''

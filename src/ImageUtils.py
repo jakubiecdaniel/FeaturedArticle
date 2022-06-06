@@ -2,7 +2,6 @@ from PIL import Image
 import cv2
 import os
 import glob
-import sys
 
 #https://stackoverflow.com/questions/185936/how-to-delete-the-contents-of-a-folder
 def clear_output_folder(folder='./output'):
@@ -11,11 +10,13 @@ def clear_output_folder(folder='./output'):
     for f in files:
         os.remove(f)
 
+
 def PNGtoJPG(image_path,image_new_path):
 
     png_img = cv2.imread(image_path)
 
     cv2.imwrite(image_new_path, png_img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+
 
 def resize(image_path,image_new_width,image_new_height):
 
@@ -33,6 +34,7 @@ def cropHeight(image_path,image_new_height):
     width, _ = img.size
     crop = img.crop((0, 0, width, image_new_height))
     crop.save(image_path)
+
 
 def SplitAndCrop(image_path):
     OUTPUT_DIR = './output'
@@ -78,14 +80,8 @@ def SplitAndCrop(image_path):
 
             output_file = save_to.format(frame_num)
             crop.save(output_file)
-            #Todo: images are sometimes too large, need to be resized, or rethink way we crop. Causes 400 error from album upload
-
-
-            
-            #resize(output_file)
 
             images.append(output_file)
             frame_num += 1
 
     return images
-
