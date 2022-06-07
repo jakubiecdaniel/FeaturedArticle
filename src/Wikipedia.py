@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException 
+from selenium.common.exceptions import ElementNotInteractableException
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -58,22 +59,22 @@ def chrome_headless_picture(URL):
     try:
         notes_el = driver.find_element_by_id("Notes")
         notes_el.click()
-    except NoSuchElementException:
+    except (NoSuchElementException, ElementNotInteractableException):
         pass
     try:
         ref_el = driver.find_element_by_id("References")
         ref_el.click()
-    except NoSuchElementException:
+    except (NoSuchElementException, ElementNotInteractableException):
         pass
     try:
         extlinks_el = driver.find_element_by_id("External_links")
         extlinks_el.click()
-    except NoSuchElementException:
+    except (NoSuchElementException, ElementNotInteractableException):
         pass
     try:
         sources_el = driver.find_element_by_id("Sources")
         sources_el.click()
-    except NoSuchElementException:
+    except (NoSuchElementException, ElementNotInteractableException):
         pass
     
     scrollHeight = driver.execute_script("return document.body.scrollHeight")
