@@ -40,7 +40,7 @@ def do_wikipedia():
     images = (ImageUtils.SplitAndCrop('sc.jpg'))
     
     return images,article
-    
+
 def run(username,password):
 
     cached_login = True
@@ -67,7 +67,7 @@ def run(username,password):
         do_upload(insta,images,article)
         
 if __name__ == '__main__':
-    do_wikipedia()
+    
     try:
         run(sys.argv[1],sys.argv[2])
     except IndexError:
