@@ -233,3 +233,70 @@ class Instagram:
         upload_id = int(response.json()['client_sidecar_id'])
 
         return upload_id
+
+
+    def delete_post(self,post_id):
+        #https://www.instagram.com/create/2836246768683468316/delete/?__d=dis
+
+        url = f'https://www.instagram.com/create/{post_id}/delete/?__d=dis'
+
+        response = self.session.request("POST", url)
+        
+        if response.status_code != 200:
+            if response.status_code == 429:
+                raise HTTPError
+            print("Failed to Delete Post: {}".format(response))
+            return
+        
+        
+
+    def delete_all_posts(self,username):
+
+        has_next = True
+        post_ids = []
+        loop_counter = 0
+        user_id = ''
+        cursor = ''
+        while has_next:
+            if loop_counter == 0:
+                url = "https://i.instagram.com/api/v1/users/web_profile_info/?username=" + username
+                
+            else:
+                url = f"https://www.instagram.com/graphql/query/?query_hash=69cba40317214236af40e7efa697781d&variables={{\"id\":\"{user_id}\",\"first\":12,\"after\":\"{cursor}\"}}"
+
+            response = self.session.request("GET", url)
+            if response.status_code != 200:
+                print("Failed to Get Account: {}".format(response))
+                return None
+            json_data = response.json()
+            if loop_counter == 0:
+                user_id = json_data['data']['user']['id']
+        
+            post_data = json_data['data']['user']['edge_owner_to_timeline_media']
+
+            posts = post_data['edges']
+            page_info = post_data['page_info']
+            cursor = page_info['end_cursor']
+            has_next = page_info['has_next_page']
+            
+            index = 0
+            while True:
+                try:
+                    id = posts[index]['node']['id']
+                except IndexError:
+                    break
+
+                post_ids.append(id)
+                index += 1
+
+            
+
+            loop_counter += 1
+
+
+        
+
+        for post in post_ids:
+            
+            self.delete_post(post)
+            
