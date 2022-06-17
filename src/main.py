@@ -54,6 +54,7 @@ def run(username,password):
 
     insta.username = username
     insta.password = password
+    
     images,article = do_wikipedia()
 
     if cached_login is True:
@@ -68,10 +69,17 @@ def run(username,password):
         
 if __name__ == '__main__':
     
+    username = ''
+    password = ''
     try:
-        run(sys.argv[1],sys.argv[2])
+        username = sys.argv[1]
+        password = sys.argv[2]
     except IndexError:
-        print("Username/Password environment variables not found")
+        print("Usage: py main.py username password")
+        exit()
+
+    run(username,password)
+    
      
     
    
