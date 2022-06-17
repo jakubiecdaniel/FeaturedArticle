@@ -56,7 +56,7 @@ def run(username,password):
     insta.password = password
     
     images,article = do_wikipedia()
-
+    
     if cached_login is True:
         try:
             do_upload(insta,images,article)

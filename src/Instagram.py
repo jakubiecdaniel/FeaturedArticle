@@ -6,6 +6,41 @@ import re
 from datetime import datetime
 class Instagram:
 
+    class EditProfile:
+
+        def __init__(self,json_data):
+            form_data = (json_data['entry_data']['SettingsPages'][0]['form_data'])
+
+            self.first_name = form_data['first_name']
+            self.email = form_data['email']
+            self.username = form_data['username']
+            self.phone_number = form_data['phone_number']
+            self.biography = form_data['biography']
+            self.external_url = form_data['external_url']
+            self.chaining_enabled = "On" if form_data['chaining_enabled'] else ""
+
+        def update_external_url(self,url):
+            self.external_url = url
+
+        def get_json(self):
+            return json.dumps(self.__dict__)
+
+        def get_payload(self):
+
+            payload = ''
+            i = 0
+            for key, value in self.__dict__.items():
+                if i > 0:
+                    payload += '&'
+                payload += f'{key}={value}'
+                i += 1
+
+            return payload
+
+
+
+    hashtag_list = ["#wikipedia","#education","#learning"]
+
     USER_AGENT = "Mozilla/5.0 (Linux; Android 9; SM-G955U Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/84.0.4147.111 Mobile Safari/537.36 Instagram 153.0.0.34.96 Android (28/9; 420dpi; 1080x2094; samsung; SM-G955U; dream2qltesq; qcom; en_US; 236572377)"
     
     def __init__(self,config_file=False):
@@ -193,6 +228,11 @@ class Instagram:
 
     def upload_album(self,upload_ids,caption=""):
 
+        try:
+            self.update_link_in_bio(caption)
+        except HTTPError:
+            print("Skipping updating link in bio...")
+
         upload_id = int(datetime.now().timestamp())
 
         children_metadata = [{"upload_id" : str(i)} for i in upload_ids] #these need to be strings (enclosed in quotes in JSON)
@@ -248,8 +288,6 @@ class Instagram:
             print("Failed to Delete Post: {}".format(response))
             return
         
-        
-
     def delete_all_posts(self,username):
 
         has_next = True
@@ -289,14 +327,44 @@ class Instagram:
                 post_ids.append(id)
                 index += 1
 
-            
-
             loop_counter += 1
-
-
-        
 
         for post in post_ids:
             
             self.delete_post(post)
+
+
+    def update_link_in_bio(self,link_url):
+        url = "https://www.instagram.com/accounts/edit/"
+
+        response = self.session.request("GET",url)
+        if response.status_code != 200:
+            print("Failed to get profile data: {}".format(response))
+            raise HTTPError
+
+        html = response.text
+
+        m = re.search('(<script type="text/javascript">window._sharedData =) ({.*)(;</script>)',html)
+
+        json_data = json.loads(m.group(2))
+
+        profile = self.EditProfile(json_data)
+        profile.update_external_url(link_url)
+
+        payload = profile.get_payload()
+
+        headers = {
+            "Content-Type":"application/x-www-form-urlencoded"
+        }
+
+        response = self.session.request("POST",url,headers=headers,json=payload)
+
+        if response.status_code != 200:
+            print("Failed to update profile data: {}".format(response))
+            raise HTTPError
+
+        
+
+
+    
             
