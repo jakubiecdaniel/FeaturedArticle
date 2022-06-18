@@ -38,7 +38,7 @@ def cropHeight(image_path,image_new_height):
 
 def SplitAndCrop(image_path):
     OUTPUT_DIR = './output'
-    MIN_ASPECT_RATIO = .8
+    MIN_ASPECT_RATIO = .81
     MAX_ASPECT_RATIO = 1.91
     NUM_IMAGES = 10
 
