@@ -230,7 +230,7 @@ class Instagram:
 
         try:
             self.update_link_in_bio(caption)
-        except HTTPError:
+        except (HTTPError, ValueError):
             print("Skipping updating link in bio...")
 
         upload_id = int(datetime.now().timestamp())
@@ -343,8 +343,14 @@ class Instagram:
             raise HTTPError
 
         html = response.text
+        #f = open("source.txt","w")
+
+        #f.write(html)
 
         m = re.search('(<script type="text/javascript">window._sharedData =) ({.*)(;</script>)',html)
+
+        if m is None:
+            raise ValueError
 
         json_data = json.loads(m.group(2))
 
