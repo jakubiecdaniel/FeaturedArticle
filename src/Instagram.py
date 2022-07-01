@@ -9,8 +9,9 @@ class Instagram:
     class EditProfile:
 
         def __init__(self,json_data):
-            form_data = (json_data['entry_data']['SettingsPages'][0]['form_data'])
-
+            #form_data = (json_data['entry_data']['SettingsPages'][0]['form_data'])
+            form_data = json_data
+            
             self.first_name = form_data['first_name']
             self.email = form_data['email']
             self.username = form_data['username']
@@ -55,6 +56,9 @@ class Instagram:
                 self.load_session_from_config()
             except FileNotFoundError:
                 print("Config files not found... running for first time...")
+
+    def get_session(self):
+        return self.session
 
 
     def load_session_from_config(self):
@@ -241,10 +245,10 @@ class Instagram:
 
     def upload_album(self,upload_ids,caption=""):
 
-        try:
-            self.update_link_in_bio(caption)
-        except (HTTPError, ValueError):
-            print("Skipping updating link in bio...")
+        #try:
+        #    self.update_link_in_bio(caption)
+        #except (HTTPError, KeyError):
+        #    print("Skipping updating link in bio...")
 
         upload_id = int(datetime.now().timestamp())
 
@@ -348,25 +352,23 @@ class Instagram:
 
 
     def update_link_in_bio(self,link_url):
-        url = "https://www.instagram.com/accounts/edit/"
+        #url = "https://www.instagram.com/accounts/edit/"
+        get_data_url = "https://i.instagram.com/api/v1/accounts/edit/web_form_data/"
+        save_data_url = "https://www.instagram.com/accounts/edit/"
 
-        response = self.session.request("GET",url)
+        response = self.session.request("GET",get_data_url)
         if response.status_code != 200:
             print("Failed to get profile data: {}".format(response))
             raise HTTPError
 
-        html = response.text
-        #f = open("source.txt","w")
-
-        #f.write(html)
-
-        m = re.search('(<script type="text/javascript">window._sharedData =) ({.*)(;</script>)',html)
-
-        if m is None:
-            raise ValueError
-
-        json_data = json.loads(m.group(2))
-
+        #html = response.text
+        #m = re.search('(<script type="text/javascript">window._sharedData =) ({.*)(;</script>)',html)
+        #if m is None:
+        #   raise ValueError
+        #json_data = json.loads(m.group(2))
+        
+        json_data = json.loads(response.text)["form_data"]
+        
         profile = self.EditProfile(json_data)
         profile.update_external_url(link_url)
 
@@ -376,7 +378,7 @@ class Instagram:
             "Content-Type":"application/x-www-form-urlencoded"
         }
 
-        response = self.session.request("POST",url,headers=headers,json=payload)
+        response = self.session.request("POST",save_data_url,headers=headers,json=payload)
 
         if response.status_code != 200:
             print("Failed to update profile data: {}".format(response))
