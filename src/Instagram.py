@@ -126,7 +126,20 @@ class Instagram:
 
         rollout_hash = (json_data['rollout_hash'])
 
-        self.session.headers.update({'X-Instagram-AJAX':rollout_hash})  
+        self.session.headers.update({'X-Instagram-AJAX':rollout_hash}) 
+
+    def check_if_logged_in(self):
+        not_logged_in_text = "not-logged-in"
+        url = "https://www.instagram.com/"
+
+        response = self.session.request("GET",url)
+        if response.status_code != 200:
+            print("Failed to check login status: {}".format(response))
+            raise HTTPError 
+
+        if not_logged_in_text in response.text:
+            return False
+        return True
         
     
     def login(self,username=None, password=None) -> bool:
@@ -371,6 +384,36 @@ class Instagram:
 
         
 
+def login_to_instagram(username,password,use_cache=False):
+
+    insta = None
+
+    if use_cache == True:
+        try:
+            insta = Instagram(True)
+        except ValueError:
+            insta = Instagram(False)
+            use_cache = False
+    else:
+        insta = Instagram(False)
+
+    insta.username = username
+    insta.password = password
+
+    logged_in = False
+    if use_cache == True:
+        logged_in = insta.check_if_logged_in()
+
+    if not logged_in:
+        insta.get_ig_app_id_and_asbd()
+        insta.get_rollout_hash()
+        insta.login()
+        insta.write_session_to_file()
+        logged_in = insta.check_if_logged_in()
+        if not logged_in:
+            raise RuntimeError("Could Not Log in to Instagram")
+
+    return insta
 
     
             

@@ -3,15 +3,6 @@ import ImageUtils
 import Wikipedia
 import Instagram
 import sys
-from requests import HTTPError
-
-def login(insta):
-    insta.get_ig_app_id_and_asbd()
-    
-    insta.get_rollout_hash()
-    
-    insta.login()
-    insta.write_session_to_file()
 
 def do_upload(insta,images,article):
     ids = []
@@ -41,32 +32,6 @@ def do_wikipedia():
     
     return images,article
 
-def run(username,password):
-
-    cached_login = True
-    insta = None
-    
-    try:
-        insta = Instagram.Instagram(True)
-    except ValueError:
-        insta = Instagram.Instagram(False)
-        cached_login = False
-
-    insta.username = username
-    insta.password = password
-    
-    images,article = do_wikipedia()
-    
-    if cached_login is True:
-        try:
-            do_upload(insta,images,article)
-        except HTTPError:
-            login(insta)
-            do_upload(insta,images,article)
-    else:
-        login(insta)
-        do_upload(insta,images,article)
-        
 if __name__ == '__main__':
     
     username = ''
@@ -78,7 +43,10 @@ if __name__ == '__main__':
         print("Usage: py main.py username password")
         exit()
 
-    run(username,password)
+    insta = Instagram.login_to_instagram(username,password,False)
+    images,article = do_wikipedia()
+    do_upload(insta,images,article)
+    #run(username,password)
     
      
     
